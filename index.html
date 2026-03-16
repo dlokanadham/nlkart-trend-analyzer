@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nlkart Trend Analyzer</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">N</div>
+      <h1>nlkart Trend<span>Analyzer</span></h1>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="active" data-tab="dashboard">
+        <span class="icon">&#9632;</span>
+        <span>Dashboard</span>
+      </button>
+      <button data-tab="heatmap">
+        <span class="icon">&#9608;</span>
+        <span>Product Heatmap</span>
+      </button>
+      <button data-tab="userflow">
+        <span class="icon">&#8644;</span>
+        <span>User Flow</span>
+      </button>
+      <button data-tab="logviewer">
+        <span class="icon">&#9776;</span>
+        <span>Log Viewer</span>
+      </button>
+      <button data-tab="import">
+        <span class="icon">&#8682;</span>
+        <span>Import</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      Logs loaded: <span class="log-count" id="sidebarLogCount">0</span>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="main-header">
+      <h2 id="tabTitle">Dashboard</h2>
+      <span class="status" id="statusText">No data loaded</span>
+    </header>
+
+    <div class="content">
+
+      <!-- Dashboard Tab -->
+      <div class="tab-panel active" id="tab-dashboard">
+        <div id="dashboardNoData" class="no-data">
+          <div class="icon">&#128202;</div>
+          <h3>No Data Loaded</h3>
+          <p>Go to the Import tab to load logs or generate sample data.</p>
+        </div>
+        <div id="dashboardContent" style="display:none;">
+          <div class="metrics-grid" id="metricsGrid"></div>
+          <div class="charts-row">
+            <div class="chart-card">
+              <h3>Activity Over Time</h3>
+              <div class="chart-container"><canvas id="activityChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <h3>Actions by Category</h3>
+              <div class="chart-container"><canvas id="categoryPieChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Heatmap Tab -->
+      <div class="tab-panel" id="tab-heatmap">
+        <div id="heatmapNoData" class="no-data">
+          <div class="icon">&#128293;</div>
+          <h3>No Data Loaded</h3>
+          <p>Go to the Import tab to load logs or generate sample data.</p>
+        </div>
+        <div id="heatmapContent" style="display:none;">
+          <div class="chart-card heatmap-section">
+            <h3>Category-wise Product Views</h3>
+            <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">Click on a category bar to drill down into individual products.</p>
+            <div class="chart-container"><canvas id="categoryHeatmapChart"></canvas></div>
+          </div>
+          <div id="drilldownPanel" class="drilldown-panel" style="display:none;">
+            <button class="back-btn" id="drilldownBack">&larr; Back to All Categories</button>
+            <h3 id="drilldownTitle">Products in Category</h3>
+            <div class="chart-container" style="margin-bottom:16px;"><canvas id="drilldownChart"></canvas></div>
+            <h4 style="margin:16px 0 8px;font-size:14px;">Product Funnel (Views &rarr; Add to Cart &rarr; Ordered)</h4>
+            <table class="product-funnel-table" id="drilldownFunnelTable">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Views</th>
+                  <th>Add to Cart</th>
+                  <th>Ordered</th>
+                  <th>View &rarr; Cart</th>
+                  <th>Cart &rarr; Order</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="charts-row" style="margin-top:24px;">
+            <div class="chart-card full-width">
+              <h3>Top 10 Most Viewed Products</h3>
+              <div class="chart-container"><canvas id="topProductsChart"></canvas></div>
+            </div>
+          </div>
+          <div class="chart-card" style="margin-top:24px;">
+            <h3>Product Funnel Overview</h3>
+            <table class="product-funnel-table" id="productFunnelTable">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Views</th>
+                  <th>Add to Cart</th>
+                  <th>Ordered</th>
+                  <th>View &rarr; Cart</th>
+                  <th>Cart &rarr; Order</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Flow Tab -->
+      <div class="tab-panel" id="tab-userflow">
+        <div id="userflowNoData" class="no-data">
+          <div class="icon">&#128100;</div>
+          <h3>No Data Loaded</h3>
+          <p>Go to the Import tab to load logs or generate sample data.</p>
+        </div>
+        <div id="userflowContent" style="display:none;">
+          <div class="funnel-container">
+            <h3>User Conversion Funnel</h3>
+            <div class="funnel-steps" id="funnelSteps"></div>
+          </div>
+          <div class="charts-row">
+            <div class="chart-card">
+              <h3>Session Timeline</h3>
+              <div class="session-selector">
+                <label for="sessionSelect">Session:</label>
+                <select id="sessionSelect"></select>
+              </div>
+              <div class="timeline" id="sessionTimeline"></div>
+            </div>
+            <div class="paths-container">
+              <h3>Common Navigation Paths</h3>
+              <div id="commonPaths"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Log Viewer Tab -->
+      <div class="tab-panel" id="tab-logviewer">
+        <div id="logviewerNoData" class="no-data">
+          <div class="icon">&#128196;</div>
+          <h3>No Data Loaded</h3>
+          <p>Go to the Import tab to load logs or generate sample data.</p>
+        </div>
+        <div id="logviewerContent" style="display:none;">
+          <div class="log-controls">
+            <select id="filterLevel">
+              <option value="">All Levels</option>
+              <option value="error">Error</option>
+              <option value="warn">Warn</option>
+              <option value="info">Info</option>
+              <option value="flow">Flow</option>
+            </select>
+            <select id="filterCategory">
+              <option value="">All Categories</option>
+            </select>
+            <input type="date" id="filterDateFrom" placeholder="From">
+            <input type="date" id="filterDateTo" placeholder="To">
+            <input type="text" id="filterSearch" placeholder="Search actions/data...">
+          </div>
+          <div class="log-table-wrapper">
+            <table class="log-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Level</th>
+                  <th>Category</th>
+                  <th>Action</th>
+                  <th>Data</th>
+                  <th>Session</th>
+                </tr>
+              </thead>
+              <tbody id="logTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="logPagination"></div>
+        </div>
+      </div>
+
+      <!-- Import Tab -->
+      <div class="tab-panel" id="tab-import">
+        <div class="import-section">
+          <div class="import-card">
+            <h3>Load Sample Data</h3>
+            <p>Generate realistic demo data to explore the analyzer.</p>
+            <button class="btn btn-success" id="loadSampleBtn">Load Sample Data</button>
+          </div>
+          <div class="import-card">
+            <h3>Upload JSON File</h3>
+            <p>Upload a JSON file exported from nlkart's logging system.</p>
+            <div class="file-upload-area" id="fileUploadArea">
+              <div class="icon">&#128193;</div>
+              <p>Click to select a file or drag &amp; drop</p>
+              <input type="file" id="fileInput" accept=".json">
+            </div>
+          </div>
+          <div class="import-card">
+            <h3>Paste JSON</h3>
+            <p>Paste the JSON array of log entries below.</p>
+            <textarea id="jsonPasteArea" placeholder='[{"id":1,"timestamp":"...","level":"info","category":"product","action":"product_view","data":{},"sessionId":"sess_abc"}]'></textarea>
+            <button class="btn btn-primary" id="parsePasteBtn">Parse &amp; Load</button>
+          </div>
+          <div class="import-result" id="importResult"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="sample-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
