@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "nlkart-db": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["c:/Practice/AI/ClaudeCode/ClaudeDemo/nlkart-mcp-servers/db_server.py"]
+    }
+  }
+}
