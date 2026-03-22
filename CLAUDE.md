@@ -8,12 +8,6 @@ Standalone HTML/JS/CSS dashboard that visualizes user behavior logs exported fro
 - Chart.js v4 via CDN for visualizations
 - Opens directly in browser (file:// or served via any HTTP server)
 
-## Files (only 4 files)
-- `index.html` — Dashboard layout with sidebar navigation and 5 tabs
-- `app.js` — All logic: import handlers, chart rendering, data processing (wrapped in IIFE)
-- `styles.css` — Professional dashboard styling with sidebar layout
-- `sample-data.js` — `generateSampleData()` function for demo purposes
-
 ## Do's and Don'ts
 - NEVER add npm, webpack, or any build tools — this is intentionally plain HTML/JS/CSS
 - NEVER use ES modules or import/export — all scripts loaded via script tags
