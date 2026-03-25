@@ -4,6 +4,11 @@
       "type": "stdio",
       "command": "C:/Python311/python.exe",
       "args": ["c:/Practice/AI/ClaudeCode/ClaudeDemo/nlkart-mcp-servers/db_server.py"]
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@playwright/mcp@latest"]
     }
   }
 }
