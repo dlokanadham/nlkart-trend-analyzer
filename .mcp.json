@@ -2,7 +2,7 @@
   "mcpServers": {
     "nlkart-db": {
       "type": "stdio",
-      "command": "python",
+      "command": "C:/Python311/python.exe",
       "args": ["c:/Practice/AI/ClaudeCode/ClaudeDemo/nlkart-mcp-servers/db_server.py"]
     }
   }
