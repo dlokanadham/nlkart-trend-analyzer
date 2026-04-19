@@ -4,7 +4,8 @@
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_click",
       "mcp__nlkart-db__query_db",
-      "mcp__nlkart-db__get_table_schema"
+      "mcp__nlkart-db__get_table_schema",
+      "mcp__playwright__browser_snapshot"
     ]
   }
 }
